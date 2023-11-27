@@ -1,0 +1,19 @@
+{
+  "name": "discord-chatbot",
+  "version": "1.0.0",
+  "description": "Discord simple chatbot that answers your questions by playing some anime character!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "openai": "^4.20.0"
+  }
+}
