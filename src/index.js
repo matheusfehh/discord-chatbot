@@ -18,24 +18,31 @@ client.on('messageCreate', async (message) => {
         const question = message.content.replace(`<@!${client.user.id}>`, '').trim();
 
         try {
-            const openaiResponse = await axios.post(
-                'https://api.openai.com/v1/engines/davinci/completions',
-                {
-                    prompt: question,
-                    max_tokens: 150,
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${openaiApiKey}`,
-                    },
+            const resposta = await axios.post('https://api.openai.com/v1/chat/completions', {
+                model: 'gpt-3.5-turbo',
+                messages: [
+                    { role: 'system', content: 'Você é um assistente de linguagem.' },
+                    { role: 'user', content: question }
+                ]
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${openaiApiKey}`
                 }
-            );
-
-            message.channel.send(`Pergunta: ${question}\nResposta: ${openaiResponse.data.choices[0].text}`);
+            });
+    
+            console.log('Resposta:', resposta.data.choices[0].message['content']);
         } catch (error) {
-            console.error('Erro ao fazer solicitação à API da OpenAI:', error.message);
-            message.channel.send('Ocorreu um erro ao processar sua pergunta.');
+            if (error.response) {
+                // A requisição foi feita e o servidor respondeu com um status fora da faixa 2xx
+                console.error('Erro de resposta da API:', error.response.data);
+            } else if (error.request) {
+                // A requisição foi feita, mas não houve resposta do servidor
+                console.error('Sem resposta do servidor:', error.request);
+            } else {
+                // Algo aconteceu ao configurar a requisição que desencadeou um erro
+                console.error('Erro ao configurar a requisição:', error.message);
+            }
         }
     }
 });
